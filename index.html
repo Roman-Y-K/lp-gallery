@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LP Gallery</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <h1 class="title">LP Gallery</h1>
+    <ul class="gallery js-gallery"></ul>
+
+    <p class="pages__counter"></p>
+
+    <ul class="pagination">
+      <li><button class="pagination__item" id="prev-page">Prev</button></li>
+      <li><button class="pagination__item" id="next-page">Next</button></li>
+    </ul>
+
+    <div class="lightbox js-lightbox">
+      <div class="lightbox__overlay"></div>
+
+      <div class="lightbox__content">
+        <img class="lightbox__image" src="" alt="" />
+      </div>
+
+      <button
+        type="button"
+        class="lightbox__button"
+        data-action="close-lightbox"
+      ></button>
+    </div>
+
+    <script src="./js/main.js" type="module"></script>
+  </body>
+</html>
