@@ -1,22 +1,29 @@
-'use strict';
+"use strict";
 
-import { fetchImages } from './api-service.js';
-import { refs } from './refs.js';
+import { fetchImages } from "./api-service.js";
+import { refs } from "./refs.js";
 
 const paginationLimit = 9;
 const pageCount = Math.ceil(100 / paginationLimit);
 let currentPage = 1;
 let images = [];
 
-images = await fetchImages(currentPage);
-createGallary(images);
-refs.paginationRef.style.display = 'flex';
+try {
+  images = await fetchImages(currentPage);
+  createGallary(images);
+  refs.paginationRef.style.display = "flex";
+} catch (error) {
+  refs.galleryRef.insertAdjacentHTML(
+    "beforebegin",
+    `<p class="error__text">Something went wrong</p>`
+  );
+}
 
-refs.galleryRef.addEventListener('click', onOpenModal);
-refs.btnCloseRef.addEventListener('click', onCloseModal);
-refs.overlayRef.addEventListener('click', onOverlayClick);
-refs.nextBtnRef.addEventListener('click', onPageClick);
-refs.prevBtnRef.addEventListener('click', onPageClick);
+refs.galleryRef.addEventListener("click", onOpenModal);
+refs.btnCloseRef.addEventListener("click", onCloseModal);
+refs.overlayRef.addEventListener("click", onOverlayClick);
+refs.nextBtnRef.addEventListener("click", onPageClick);
+refs.prevBtnRef.addEventListener("click", onPageClick);
 
 function createGallary(array) {
   const gallaryList = array.reduce(
@@ -32,32 +39,32 @@ function createGallary(array) {
       alt="${author}"
     /> </a>
 </li>`,
-    ''
+    ""
   );
-  refs.galleryRef.insertAdjacentHTML('afterbegin', gallaryList);
-  refs.pageCounterRef.insertAdjacentText('afterbegin', `Page: ${currentPage}`);
+  refs.galleryRef.insertAdjacentHTML("afterbegin", gallaryList);
+  refs.pageCounterRef.insertAdjacentText("afterbegin", `Page: ${currentPage}`);
   disableButton();
 }
 
 function onOpenModal(event) {
   event.preventDefault();
-  if (event.target.nodeName !== 'IMG') {
+  if (event.target.nodeName !== "IMG") {
     return;
   }
 
   const bigImg = event.target.dataset.source;
 
-  window.addEventListener('keydown', onEscapePress);
+  window.addEventListener("keydown", onEscapePress);
 
-  refs.lightBoxRef.classList.add('is-open');
+  refs.lightBoxRef.classList.add("is-open");
 
   refs.backdropImageRef.src = bigImg;
 }
 
 function onCloseModal() {
-  window.removeEventListener('keydown', onEscapePress);
-  refs.lightBoxRef.classList.remove('is-open');
-  refs.backdropImageRef.src = '';
+  window.removeEventListener("keydown", onEscapePress);
+  refs.lightBoxRef.classList.remove("is-open");
+  refs.backdropImageRef.src = "";
 }
 
 function onOverlayClick(event) {
@@ -67,30 +74,38 @@ function onOverlayClick(event) {
 }
 
 function onEscapePress(event) {
-  if (event.code === 'Escape') {
+  if (event.code === "Escape") {
     onCloseModal();
   }
 }
 
 function clearGallery() {
-  refs.galleryRef.innerHTML = '';
-  refs.pageCounterRef.innerHTML = '';
+  refs.galleryRef.innerHTML = "";
+  refs.pageCounterRef.innerHTML = "";
 }
 
 function disableButton() {
   currentPage === 1
-    ? refs.prevBtnRef.classList.add('disabled')
-    : refs.prevBtnRef.classList.remove('disabled');
+    ? refs.prevBtnRef.classList.add("disabled")
+    : refs.prevBtnRef.classList.remove("disabled");
 
   currentPage === pageCount
-    ? refs.nextBtnRef.classList.add('disabled')
-    : refs.nextBtnRef.classList.remove('disabled');
+    ? refs.nextBtnRef.classList.add("disabled")
+    : refs.nextBtnRef.classList.remove("disabled");
 }
 
 async function onPageClick(e) {
   const { id } = e.target;
-  currentPage = id === 'next-page' ? (currentPage += 1) : (currentPage -= 1);
-  images = await fetchImages(currentPage);
-  clearGallery();
-  createGallary(images);
+
+  try {
+    currentPage = id === "next-page" ? (currentPage += 1) : (currentPage -= 1);
+    images = await fetchImages(currentPage);
+    clearGallery();
+    createGallary(images);
+  } catch (error) {
+    refs.galleryRef.insertAdjacentHTML(
+      "beforebegin",
+      `<p class="error__text">Something went wrong</p>`
+    );
+  }
 }

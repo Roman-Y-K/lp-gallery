@@ -6,6 +6,7 @@ export async function fetchImages(page) {
     const res = await fetch(`${BASEURL}?page=${page}&limit=${PER_PAGE}`);
     return res.json();
   } catch (error) {
-    console.log('Fetch images error:', error);
+    console.log("Fetch images error:", error);
+    return error;
   }
 }
